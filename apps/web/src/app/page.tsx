@@ -269,7 +269,7 @@ export default function Home() {
   if (stage === "intro") {
     return (
       <main
-        className="min-h-screen bg-[#05060a] text-zinc-100 grid place-items-center p-6 overflow-hidden"
+        className="min-h-screen bg-[#030712] text-zinc-100 grid place-items-center p-6 overflow-hidden relative"
         onMouseMove={(e) => {
           const target = e.currentTarget.getBoundingClientRect();
           setIntroMouse({
@@ -281,32 +281,35 @@ export default function Home() {
         <div
           className="pointer-events-none absolute inset-0 transition-all duration-200"
           style={{
-            background:
-              `radial-gradient(420px circle at ${introMouse.x}% ${introMouse.y}%, rgba(129,140,248,0.2), rgba(6,8,18,0) 55%)`,
+            background: `radial-gradient(520px circle at ${introMouse.x}% ${introMouse.y}%, rgba(125,211,252,0.22), rgba(6,8,18,0) 58%)`,
           }}
         />
-        <div className="pointer-events-none absolute -top-16 -left-24 h-80 w-80 rounded-full bg-cyan-300/10 blur-3xl" style={{ animation: "floatA 12s ease-in-out infinite" }} />
-        <div className="pointer-events-none absolute -bottom-24 -right-20 h-96 w-96 rounded-full bg-indigo-300/10 blur-3xl" style={{ animation: "floatB 15s ease-in-out infinite" }} />
-        <div className="pointer-events-none absolute inset-0 opacity-30" style={{ backgroundImage: "linear-gradient(130deg, rgba(180,220,255,0.08) 0%, transparent 40%, rgba(180,220,255,0.04) 100%)" }} />
-        <section className="relative w-full max-w-4xl rounded-3xl border border-white/10 bg-gradient-to-b from-[#0e1121] to-[#060812] p-8 md:p-12 shadow-[0_0_100px_rgba(100,120,255,0.18)] animate-in fade-in duration-700">
-          <p className="text-xs uppercase tracking-[0.25em] text-indigo-300">Sensa</p>
-          <h1 className="mt-4 text-4xl md:text-6xl font-semibold leading-tight">Step into a sensory journey.</h1>
-          <p className="mt-5 text-zinc-300 max-w-2xl text-lg">
-            Inspired by calm ritual spaces — like entering warm ancient baths. Slow down. Let the noise fade.
-            You won’t choose with ratings. You’ll choose with feeling.
+        <div className="pointer-events-none absolute inset-0 opacity-80" style={{ background: "radial-gradient(1200px 520px at 50% 120%, rgba(103,232,249,0.25), rgba(6,8,18,0) 65%)" }} />
+        <div className="pointer-events-none absolute -top-24 left-[-8%] h-[34rem] w-[34rem] rounded-full bg-cyan-300/12 blur-3xl" style={{ animation: "floatA 14s ease-in-out infinite" }} />
+        <div className="pointer-events-none absolute -bottom-24 right-[-10%] h-[38rem] w-[38rem] rounded-full bg-blue-300/12 blur-3xl" style={{ animation: "floatB 18s ease-in-out infinite" }} />
+        <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: "linear-gradient(180deg, rgba(186,230,253,0.06), transparent 24%, transparent 76%, rgba(186,230,253,0.08))" }} />
+
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48" style={{ background: "linear-gradient(0deg, rgba(103,232,249,0.14), rgba(103,232,249,0))" }} />
+
+        <section className="relative z-10 w-full max-w-3xl text-center animate-in fade-in duration-700">
+          <p className="text-xs uppercase tracking-[0.35em] text-cyan-200/90">Sensa</p>
+          <h1 className="mt-6 text-5xl md:text-7xl font-semibold leading-[1.05] text-zinc-100">Step into an oasis.</h1>
+          <p className="mt-6 text-zinc-200/90 text-lg md:text-xl leading-relaxed">
+            A calm sensory ritual for choosing where to go next. No ratings, no doom-scroll, no noise.
+            Just breath, movement, and signal.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-10 flex items-center justify-center">
             <button
               onClick={() => {
                 setRitualPulse(true);
                 setTimeout(() => setRitualPulse(false), 220);
                 setStage("intent");
               }}
-              className={`rounded-xl bg-indigo-500 hover:bg-indigo-400 px-6 py-3 font-medium transition active:scale-95 ${
-                ritualPulse ? "scale-105 shadow-[0_0_40px_rgba(129,140,248,0.6)]" : ""
+              className={`rounded-full bg-cyan-300/90 hover:bg-cyan-200 text-slate-900 px-8 py-3 font-semibold transition active:scale-95 ${
+                ritualPulse ? "scale-105 shadow-[0_0_45px_rgba(103,232,249,0.55)]" : "shadow-[0_0_26px_rgba(103,232,249,0.35)]"
               }`}
             >
-              Begin the ritual
+              Enter the water
             </button>
           </div>
         </section>
