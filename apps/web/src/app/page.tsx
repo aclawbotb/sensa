@@ -186,12 +186,28 @@ export default function Home() {
       ctx.clearRect(0, 0, width, height);
       ctx.drawImage(baseLayer, 0, 0);
 
+      // immersive water/fog layer
+      const mx = journeyMouseRef.current.x;
+      const my = journeyMouseRef.current.y;
+      const fog = ctx.createRadialGradient(
+        width * mx,
+        height * my,
+        20,
+        width * mx,
+        height * my,
+        Math.max(width, height) * 0.55,
+      );
+      fog.addColorStop(0, "rgba(170,210,255,0.12)");
+      fog.addColorStop(1, "rgba(10,14,25,0.02)");
+      ctx.fillStyle = fog;
+      ctx.fillRect(0, 0, width, height);
+
       // drifting hash texture
       ctx.strokeStyle = "rgba(180,190,255,0.12)";
       ctx.lineWidth = 1;
       for (let i = 0; i < 140; i++) {
-        const x = ((i * 73 + t * 0.02) % (width + 120)) - 60;
-        const y = (i * 41 + Math.sin(t * 0.0007 + i) * 80) % height;
+        const x = ((i * 73 + t * 0.02) % (width + 120)) - 60 + (mx - 0.5) * 12;
+        const y = (i * 41 + Math.sin(t * 0.0007 + i) * 80) % height + (my - 0.5) * 8;
         const len = 8 + ((i * 13) % 12);
         ctx.beginPath();
         ctx.moveTo(x, y);
@@ -200,12 +216,12 @@ export default function Home() {
       }
 
       // liftable hotspots
-      const mx = journeyMouseRef.current.x * width;
-      const my = journeyMouseRef.current.y * height;
+      const mxPx = journeyMouseRef.current.x * width;
+      const myPx = journeyMouseRef.current.y * height;
       for (const p of points) {
         const px = p.x * width;
         const py = p.y * height + Math.sin(t * 0.0015 + p.x * 10) * 5;
-        const dist = Math.hypot(mx - px, my - py);
+        const dist = Math.hypot(mxPx - px, myPx - py);
         const lift = Math.max(0, 1 - dist / 120);
         const r = 6 + p.weight * 7 + lift * 8;
 
@@ -310,7 +326,7 @@ export default function Home() {
                 ritualPulse ? "scale-105 shadow-[0_0_45px_rgba(103,232,249,0.55)]" : "shadow-[0_0_26px_rgba(103,232,249,0.35)]"
               }`}
             >
-              Enter the water
+Begin journey
             </button>
           </div>
         </section>
