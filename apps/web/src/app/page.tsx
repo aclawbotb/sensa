@@ -318,7 +318,7 @@ export default function Home() {
   if (stage === "intro") {
     return (
       <main
-        className="min-h-screen bg-[#030712] text-zinc-100 grid place-items-center p-6 overflow-hidden relative"
+        className="min-h-screen bg-[#030712] text-zinc-100 grid place-items-center p-6 overflow-hidden relative transition-opacity duration-700"
         onMouseMove={(e) => {
           const target = e.currentTarget.getBoundingClientRect();
           setIntroMouse({
@@ -345,7 +345,7 @@ export default function Home() {
           <h1 className="mt-6 text-5xl md:text-7xl font-semibold leading-[1.05] text-zinc-100" style={{ fontFamily: "var(--font-display-serif)" }}>
             Follow what pulls you.
           </h1>
-          <p className="mt-6 text-zinc-200/90 text-lg md:text-xl leading-relaxed">
+          <p className="mt-6 text-zinc-200/90 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
             A quieter way to choose what comes next — guided by sensation instead of feeds, scores, and noise.
           </p>
           <div className="mt-10 flex items-center justify-center">
@@ -355,7 +355,7 @@ export default function Home() {
                 setTimeout(() => setRitualPulse(false), 220);
                 setStage("intent");
               }}
-              className={`rounded-full bg-cyan-300/90 hover:bg-cyan-200 text-slate-900 px-8 py-3 font-semibold transition active:scale-95 ${
+              className={`rounded-full bg-cyan-300/90 hover:bg-cyan-200 text-slate-900 px-8 py-3 font-semibold transition-all duration-300 ease-[var(--ease-sensa)] active:scale-95 ${
                 ritualPulse ? "scale-105 shadow-[0_0_45px_rgba(103,232,249,0.55)]" : "shadow-[0_0_26px_rgba(103,232,249,0.35)]"
               }`}
             >
@@ -369,7 +369,7 @@ export default function Home() {
 
   if (stage === "intent") {
     return (
-      <main className="min-h-screen bg-[#05060a] text-zinc-100 grid place-items-center p-6 overflow-hidden relative">
+      <main className="min-h-screen bg-[#05060a] text-zinc-100 grid place-items-center p-6 overflow-hidden relative transition-opacity duration-700">
         <div className="pointer-events-none absolute -top-10 left-10 h-72 w-72 rounded-full bg-teal-300/10 blur-3xl" style={{ animation: "floatA 10s ease-in-out infinite" }} />
         <div className="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-indigo-300/10 blur-3xl" style={{ animation: "floatB 14s ease-in-out infinite" }} />
         <section className="relative w-full max-w-4xl rounded-3xl border border-white/10 bg-[#0a0d19]/90 p-8 md:p-10 animate-in fade-in duration-700">
@@ -391,7 +391,7 @@ export default function Home() {
                   setQuery(preset);
                   setShowCustomInput(false);
                 }}
-                className={`rounded-full px-5 py-2.5 text-sm border transition-all duration-300 ${
+                className={`rounded-full px-5 py-2.5 text-sm border transition-all duration-300 ease-[var(--ease-sensa)] ${
                   query.toLowerCase() === preset.toLowerCase() && !showCustomInput
                     ? "border-cyan-300/80 bg-cyan-300/15 text-cyan-100"
                     : "border-zinc-700 bg-zinc-900/70 text-zinc-300 hover:border-cyan-300/40"
@@ -402,7 +402,7 @@ export default function Home() {
             ))}
             <button
               onClick={() => setShowCustomInput(true)}
-              className={`rounded-full px-5 py-2.5 text-sm border transition-all duration-300 ${
+              className={`rounded-full px-5 py-2.5 text-sm border transition-all duration-300 ease-[var(--ease-sensa)] ${
                 showCustomInput
                   ? "border-cyan-300 bg-cyan-400/20 text-cyan-100"
                   : "border-cyan-300/60 bg-cyan-400/10 text-cyan-200 hover:bg-cyan-400/20"
@@ -451,7 +451,7 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-[#05060a] text-zinc-100 p-4 md:p-6">
+    <main className="min-h-screen bg-[#05060a] text-zinc-100 p-4 md:p-6 transition-opacity duration-700">
       <div className="relative mx-auto max-w-7xl h-[94vh] rounded-2xl border border-white/10 overflow-hidden">
         <canvas
           ref={canvasRef}
@@ -462,17 +462,17 @@ export default function Home() {
           className={`w-full h-full ${hoveringHotspot ? "cursor-grab" : "cursor-crosshair"}`}
         />
 
-        <div className="absolute left-4 top-4 rounded-full border border-cyan-200/25 bg-[#08111d]/65 px-3 py-1 text-xs tracking-widest uppercase text-cyan-100/90">
-          Journey Mode · {query}
+        <div className="absolute left-4 top-4 rounded-full border border-cyan-200/25 bg-[#08111d]/65 px-3 py-1 text-[11px] tracking-[0.18em] uppercase text-cyan-100/90">
+          {query}
         </div>
-        <div className="absolute right-4 top-4 rounded-full border border-cyan-200/25 bg-[#08111d]/65 px-3 py-1 text-xs text-cyan-100/90">
-          Bridge: {bridgeConnected ? "Connected" : "Not Connected"}
+        <div className={`absolute right-4 top-4 rounded-full border px-3 py-1 text-[11px] ${bridgeConnected ? "border-cyan-200/30 bg-cyan-300/15 text-cyan-100" : "border-zinc-500/40 bg-zinc-800/40 text-zinc-300"}`}>
+          {bridgeConnected ? "Bridge on" : "Bridge off"}
         </div>
 
-        <div className="absolute left-4 bottom-4 right-4 md:right-auto md:w-[560px] rounded-2xl border border-cyan-200/20 bg-[#08111d]/60 backdrop-blur-md p-4 space-y-3">
-          <p className="text-sm text-zinc-300">{hint}</p>
+        <div className="absolute left-4 bottom-4 right-4 md:right-auto md:w-[460px] rounded-2xl border border-cyan-200/20 bg-[#08111d]/58 backdrop-blur-md p-4 space-y-3">
+          <p className="text-sm text-zinc-200">{hint}</p>
           {!pendingReveal ? (
-            <p className="text-xs text-zinc-400">Move over the map, click where it feels strongest.</p>
+            <p className="text-xs text-zinc-400">Move across the field. Click where the pull feels strongest.</p>
           ) : (
             <button
               className="rounded-full bg-cyan-300/90 hover:bg-cyan-200 text-slate-900 px-6 py-3 font-semibold"
@@ -480,17 +480,17 @@ export default function Home() {
                 setShowWaitlistModal(true);
               }}
             >
-              Press Reveal
+              Reveal
             </button>
           )}
 
           {selected && (
             <div className="rounded-xl border border-cyan-300/30 bg-cyan-950/20 p-3">
-              <p className="text-xs uppercase tracking-wider text-cyan-200">Your signal</p>
-              <h2 className="text-lg font-semibold">{selected.picked.name}</h2>
-              <p className="text-zinc-300 text-sm">{selected.picked.address}</p>
-              <a className="text-indigo-300 underline text-sm" href={selected.picked.mapsUrl} target="_blank">
-                Open in Google Maps
+              <p className="text-[11px] uppercase tracking-wider text-cyan-200">Your signal</p>
+              <h2 className="text-base font-semibold">{selected.picked.name}</h2>
+              <p className="text-zinc-300 text-xs">{selected.picked.address}</p>
+              <a className="text-cyan-200 underline text-xs" href={selected.picked.mapsUrl} target="_blank">
+                Open in Maps
               </a>
             </div>
           )}
