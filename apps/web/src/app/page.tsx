@@ -359,7 +359,7 @@ export default function Home() {
                 ritualPulse ? "scale-105 shadow-[0_0_45px_rgba(103,232,249,0.55)]" : "shadow-[0_0_26px_rgba(103,232,249,0.35)]"
               }`}
             >
-Begin journey
+              Begin journey
             </button>
           </div>
         </section>
@@ -373,7 +373,7 @@ Begin journey
         <div className="pointer-events-none absolute -top-10 left-10 h-72 w-72 rounded-full bg-teal-300/10 blur-3xl" style={{ animation: "floatA 10s ease-in-out infinite" }} />
         <div className="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-indigo-300/10 blur-3xl" style={{ animation: "floatB 14s ease-in-out infinite" }} />
         <section className="relative w-full max-w-4xl rounded-3xl border border-white/10 bg-[#0a0d19]/90 p-8 md:p-10 animate-in fade-in duration-700">
-          <p className="text-xs uppercase tracking-[0.25em] text-indigo-300">Set your intention</p>
+          <p className="text-xs uppercase tracking-[0.25em] text-cyan-200/90">Set your intention</p>
           <h2 className="mt-3 text-3xl font-semibold" style={{ fontFamily: "var(--font-display-serif)" }}>What are you seeking tonight?</h2>
 
           <div className="mt-6 flex flex-wrap gap-2">
@@ -386,8 +386,8 @@ Begin journey
                 }}
                 className={`rounded-full px-4 py-2 text-sm border transition ${
                   query.toLowerCase() === preset.toLowerCase() && !showCustomInput
-                    ? "border-indigo-400 bg-indigo-500/20 text-indigo-200"
-                    : "border-zinc-700 bg-zinc-900/70 text-zinc-300 hover:border-zinc-500"
+                    ? "border-cyan-300/80 bg-cyan-300/15 text-cyan-100"
+                    : "border-zinc-700 bg-zinc-900/70 text-zinc-300 hover:border-cyan-300/40"
                 }`}
               >
                 {preset}
@@ -397,8 +397,8 @@ Begin journey
               onClick={() => setShowCustomInput((v) => !v)}
               className={`rounded-full px-4 py-2 text-sm border transition ${
                 showCustomInput
-                  ? "border-fuchsia-300 bg-fuchsia-500/20 text-fuchsia-100"
-                  : "border-fuchsia-400/60 bg-fuchsia-500/10 text-fuchsia-200 hover:bg-fuchsia-500/20"
+                  ? "border-cyan-300 bg-cyan-400/20 text-cyan-100"
+                  : "border-cyan-300/60 bg-cyan-400/10 text-cyan-200 hover:bg-cyan-400/20"
               }`}
             >
               {showCustomInput ? "Hide custom" : "Enter your own"}
@@ -407,7 +407,7 @@ Begin journey
 
           {showCustomInput && (
             <input
-              className="mt-4 w-full rounded-xl border border-fuchsia-400/40 bg-zinc-900 px-4 py-3 outline-none"
+              className="mt-4 w-full rounded-full border border-cyan-300/40 bg-[#0a1220] px-5 py-3 outline-none"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Type your own intention..."
@@ -417,7 +417,7 @@ Begin journey
 
           <div className="mt-6 flex gap-3">
             <button
-              className="rounded-xl bg-indigo-500 hover:bg-indigo-400 px-5 py-3 font-medium"
+              className="rounded-full bg-cyan-300/90 hover:bg-cyan-200 text-slate-900 px-6 py-3 font-semibold"
               onClick={async () => {
                 await startSearch();
                 setStage("journey");
@@ -425,7 +425,7 @@ Begin journey
             >
               Enter the field
             </button>
-            <button className="rounded-xl border border-zinc-700 px-5 py-3" onClick={() => setStage("intro")}>
+            <button className="rounded-full border border-cyan-300/30 text-cyan-100 px-6 py-3" onClick={() => setStage("intro")}>
               Back
             </button>
           </div>
@@ -446,20 +446,20 @@ Begin journey
           className={`w-full h-full ${hoveringHotspot ? "cursor-grab" : "cursor-crosshair"}`}
         />
 
-        <div className="absolute left-4 top-4 rounded-full border border-white/20 bg-black/40 px-3 py-1 text-xs tracking-widest uppercase">
+        <div className="absolute left-4 top-4 rounded-full border border-cyan-200/25 bg-[#08111d]/65 px-3 py-1 text-xs tracking-widest uppercase text-cyan-100/90">
           Journey Mode · {query}
         </div>
-        <div className="absolute right-4 top-4 rounded-full border border-white/20 bg-black/40 px-3 py-1 text-xs">
+        <div className="absolute right-4 top-4 rounded-full border border-cyan-200/25 bg-[#08111d]/65 px-3 py-1 text-xs text-cyan-100/90">
           Bridge: {bridgeConnected ? "Connected" : "Not Connected"}
         </div>
 
-        <div className="absolute left-4 bottom-4 right-4 md:right-auto md:w-[560px] rounded-2xl border border-white/15 bg-black/45 backdrop-blur-sm p-4 space-y-3">
+        <div className="absolute left-4 bottom-4 right-4 md:right-auto md:w-[560px] rounded-2xl border border-cyan-200/20 bg-[#08111d]/60 backdrop-blur-md p-4 space-y-3">
           <p className="text-sm text-zinc-300">{hint}</p>
           {!pendingReveal ? (
             <p className="text-xs text-zinc-400">Move over the map, click where it feels strongest.</p>
           ) : (
             <button
-              className="rounded-xl bg-indigo-500 hover:bg-indigo-400 px-5 py-3 font-medium"
+              className="rounded-full bg-cyan-300/90 hover:bg-cyan-200 text-slate-900 px-6 py-3 font-semibold"
               onClick={() => {
                 setShowWaitlistModal(true);
               }}
@@ -469,8 +469,8 @@ Begin journey
           )}
 
           {selected && (
-            <div className="rounded-xl border border-emerald-700/40 bg-emerald-950/30 p-3">
-              <p className="text-xs uppercase tracking-wider text-emerald-300">Your signal</p>
+            <div className="rounded-xl border border-cyan-300/30 bg-cyan-950/20 p-3">
+              <p className="text-xs uppercase tracking-wider text-cyan-200">Your signal</p>
               <h2 className="text-lg font-semibold">{selected.picked.name}</h2>
               <p className="text-zinc-300 text-sm">{selected.picked.address}</p>
               <a className="text-indigo-300 underline text-sm" href={selected.picked.mapsUrl} target="_blank">
@@ -489,8 +489,8 @@ Begin journey
 
       {showWaitlistModal && (
         <div className="fixed inset-0 bg-black/60 grid place-items-center p-4">
-          <div className="w-full max-w-lg rounded-2xl border border-white/15 bg-[#0d1120] p-6">
-            <p className="text-xs uppercase tracking-[0.2em] text-indigo-300">Join the full journey</p>
+          <div className="w-full max-w-lg rounded-2xl border border-cyan-200/20 bg-[#0a1220] p-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-cyan-200">Join the full journey</p>
             <h3 className="mt-2 text-2xl font-semibold">Get early access to global Sensa</h3>
             <p className="mt-2 text-zinc-300 text-sm">You felt one signal. Next, unlock the world.</p>
 
@@ -501,19 +501,19 @@ Begin journey
                 value={waitlistEmail}
                 onChange={(e) => setWaitlistEmail(e.target.value)}
                 placeholder="you@email.com"
-                className="w-full rounded-xl border border-white/15 bg-black/30 px-4 py-3 outline-none"
+                className="w-full rounded-full border border-cyan-200/25 bg-[#08111d]/70 px-5 py-3 outline-none"
               />
               <div className="flex gap-2">
                 <button
                   type="submit"
                   disabled={waitlistState === "loading"}
-                  className="rounded-xl bg-indigo-500 hover:bg-indigo-400 disabled:opacity-70 px-4 py-2"
+                  className="rounded-full bg-cyan-300/90 hover:bg-cyan-200 text-slate-900 disabled:opacity-70 px-5 py-2 font-semibold"
                 >
                   {waitlistState === "loading" ? "Joining..." : "Join waitlist"}
                 </button>
                 <button
                   type="button"
-                  className="rounded-xl border border-zinc-700 px-4 py-2"
+                  className="rounded-full border border-cyan-200/25 text-cyan-100 px-5 py-2"
                   onClick={() => setShowWaitlistModal(false)}
                 >
                   Close
