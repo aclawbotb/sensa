@@ -293,10 +293,11 @@ export default function Home() {
 
         <section className="relative z-10 w-full max-w-3xl text-center animate-in fade-in duration-700">
           <p className="text-xs uppercase tracking-[0.35em] text-cyan-200/90">Sensa</p>
-          <h1 className="mt-6 text-5xl md:text-7xl font-semibold leading-[1.05] text-zinc-100">Step into an oasis.</h1>
+          <h1 className="mt-6 text-5xl md:text-7xl font-semibold leading-[1.05] text-zinc-100" style={{ fontFamily: "var(--font-display-serif)" }}>
+            Follow what pulls you.
+          </h1>
           <p className="mt-6 text-zinc-200/90 text-lg md:text-xl leading-relaxed">
-            A calm sensory ritual for choosing where to go next. No ratings, no doom-scroll, no noise.
-            Just breath, movement, and signal.
+            A quieter way to choose what comes next — guided by sensation instead of feeds, scores, and noise.
           </p>
           <div className="mt-10 flex items-center justify-center">
             <button
@@ -324,7 +325,7 @@ export default function Home() {
         <div className="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-indigo-300/10 blur-3xl" style={{ animation: "floatB 14s ease-in-out infinite" }} />
         <section className="relative w-full max-w-4xl rounded-3xl border border-white/10 bg-[#0a0d19]/90 p-8 md:p-10 animate-in fade-in duration-700">
           <p className="text-xs uppercase tracking-[0.25em] text-indigo-300">Set your intention</p>
-          <h2 className="mt-3 text-3xl font-semibold">What are you seeking tonight?</h2>
+          <h2 className="mt-3 text-3xl font-semibold" style={{ fontFamily: "var(--font-display-serif)" }}>What are you seeking tonight?</h2>
 
           <div className="mt-6 flex flex-wrap gap-2">
             {PRESETS.map((preset) => (
