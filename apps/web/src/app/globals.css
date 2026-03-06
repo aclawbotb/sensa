@@ -25,6 +25,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+:root {
+  --ease-sensa: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 @keyframes floatA {
   0%,
   100% { transform: translate(0, 0) scale(1); }

@@ -373,10 +373,17 @@ export default function Home() {
         <div className="pointer-events-none absolute -top-10 left-10 h-72 w-72 rounded-full bg-teal-300/10 blur-3xl" style={{ animation: "floatA 10s ease-in-out infinite" }} />
         <div className="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-indigo-300/10 blur-3xl" style={{ animation: "floatB 14s ease-in-out infinite" }} />
         <section className="relative w-full max-w-4xl rounded-3xl border border-white/10 bg-[#0a0d19]/90 p-8 md:p-10 animate-in fade-in duration-700">
-          <p className="text-xs uppercase tracking-[0.25em] text-cyan-200/90">Set your intention</p>
-          <h2 className="mt-3 text-3xl font-semibold" style={{ fontFamily: "var(--font-display-serif)" }}>What are you seeking tonight?</h2>
+          <button
+            className="text-cyan-200/70 hover:text-cyan-100 text-sm"
+            onClick={() => setStage("intro")}
+          >
+            ← Back
+          </button>
 
-          <div className="mt-6 flex flex-wrap gap-2">
+          <p className="mt-4 text-xs uppercase tracking-[0.25em] text-cyan-200/90">Set your intention</p>
+          <h2 className="mt-3 text-4xl font-semibold leading-tight" style={{ fontFamily: "var(--font-display-serif)" }}>What are you seeking tonight?</h2>
+
+          <div className="mt-7 flex flex-wrap gap-3">
             {PRESETS.map((preset) => (
               <button
                 key={preset}
@@ -384,7 +391,7 @@ export default function Home() {
                   setQuery(preset);
                   setShowCustomInput(false);
                 }}
-                className={`rounded-full px-4 py-2 text-sm border transition ${
+                className={`rounded-full px-5 py-2.5 text-sm border transition-all duration-300 ${
                   query.toLowerCase() === preset.toLowerCase() && !showCustomInput
                     ? "border-cyan-300/80 bg-cyan-300/15 text-cyan-100"
                     : "border-zinc-700 bg-zinc-900/70 text-zinc-300 hover:border-cyan-300/40"
@@ -394,41 +401,50 @@ export default function Home() {
               </button>
             ))}
             <button
-              onClick={() => setShowCustomInput((v) => !v)}
-              className={`rounded-full px-4 py-2 text-sm border transition ${
+              onClick={() => setShowCustomInput(true)}
+              className={`rounded-full px-5 py-2.5 text-sm border transition-all duration-300 ${
                 showCustomInput
                   ? "border-cyan-300 bg-cyan-400/20 text-cyan-100"
                   : "border-cyan-300/60 bg-cyan-400/10 text-cyan-200 hover:bg-cyan-400/20"
               }`}
             >
-              {showCustomInput ? "Hide custom" : "Enter your own"}
+              Enter your own
             </button>
           </div>
 
           {showCustomInput && (
-            <input
-              className="mt-4 w-full rounded-full border border-cyan-300/40 bg-[#0a1220] px-5 py-3 outline-none"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Type your own intention..."
-              autoFocus
-            />
-          )}
-
-          <div className="mt-6 flex gap-3">
-            <button
-              className="rounded-full bg-cyan-300/90 hover:bg-cyan-200 text-slate-900 px-6 py-3 font-semibold"
-              onClick={async () => {
-                await startSearch();
+            <form
+              className="mt-5"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (!query.trim()) return;
+                await startSearch(query.trim());
                 setStage("journey");
               }}
             >
-              Enter the field
-            </button>
-            <button className="rounded-full border border-cyan-300/30 text-cyan-100 px-6 py-3" onClick={() => setStage("intro")}>
-              Back
-            </button>
-          </div>
+              <input
+                className="w-full rounded-full border border-cyan-300/40 bg-[#0a1220] px-5 py-3 outline-none"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Type your intention and press Enter"
+                autoFocus
+              />
+            </form>
+          )}
+
+          {!showCustomInput && (
+            <div className="mt-7">
+              <button
+                className="rounded-full bg-cyan-300/90 hover:bg-cyan-200 text-slate-900 px-7 py-3 font-semibold transition-all duration-300"
+                onClick={async () => {
+                  await startSearch();
+                  setStage("journey");
+                }}
+              >
+                Enter the field
+              </button>
+            </div>
+          )}
         </section>
       </main>
     );
