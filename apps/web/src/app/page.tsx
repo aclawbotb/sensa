@@ -39,6 +39,7 @@ export default function Home() {
   const [introMouse, setIntroMouse] = useState({ x: 50, y: 50 });
   const [ritualPulse, setRitualPulse] = useState(false);
   const [hoveringHotspot, setHoveringHotspot] = useState(false);
+  const [showCustomInput, setShowCustomInput] = useState(false);
   const journeyMouseRef = useRef({ x: 0.5, y: 0.5 });
   const bridgeRef = useRef<WebSocket | null>(null);
 
@@ -284,6 +285,9 @@ export default function Home() {
               `radial-gradient(420px circle at ${introMouse.x}% ${introMouse.y}%, rgba(129,140,248,0.2), rgba(6,8,18,0) 55%)`,
           }}
         />
+        <div className="pointer-events-none absolute -top-16 -left-24 h-80 w-80 rounded-full bg-cyan-300/10 blur-3xl" style={{ animation: "floatA 12s ease-in-out infinite" }} />
+        <div className="pointer-events-none absolute -bottom-24 -right-20 h-96 w-96 rounded-full bg-indigo-300/10 blur-3xl" style={{ animation: "floatB 15s ease-in-out infinite" }} />
+        <div className="pointer-events-none absolute inset-0 opacity-30" style={{ backgroundImage: "linear-gradient(130deg, rgba(180,220,255,0.08) 0%, transparent 40%, rgba(180,220,255,0.04) 100%)" }} />
         <section className="relative w-full max-w-4xl rounded-3xl border border-white/10 bg-gradient-to-b from-[#0e1121] to-[#060812] p-8 md:p-12 shadow-[0_0_100px_rgba(100,120,255,0.18)] animate-in fade-in duration-700">
           <p className="text-xs uppercase tracking-[0.25em] text-indigo-300">Sensa</p>
           <h1 className="mt-4 text-4xl md:text-6xl font-semibold leading-tight">Step into a sensory journey.</h1>
@@ -312,8 +316,10 @@ export default function Home() {
 
   if (stage === "intent") {
     return (
-      <main className="min-h-screen bg-[#05060a] text-zinc-100 grid place-items-center p-6">
-        <section className="w-full max-w-4xl rounded-3xl border border-white/10 bg-[#0a0d19]/90 p-8 md:p-10 animate-in fade-in duration-700">
+      <main className="min-h-screen bg-[#05060a] text-zinc-100 grid place-items-center p-6 overflow-hidden relative">
+        <div className="pointer-events-none absolute -top-10 left-10 h-72 w-72 rounded-full bg-teal-300/10 blur-3xl" style={{ animation: "floatA 10s ease-in-out infinite" }} />
+        <div className="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-indigo-300/10 blur-3xl" style={{ animation: "floatB 14s ease-in-out infinite" }} />
+        <section className="relative w-full max-w-4xl rounded-3xl border border-white/10 bg-[#0a0d19]/90 p-8 md:p-10 animate-in fade-in duration-700">
           <p className="text-xs uppercase tracking-[0.25em] text-indigo-300">Set your intention</p>
           <h2 className="mt-3 text-3xl font-semibold">What are you seeking tonight?</h2>
 
@@ -321,9 +327,12 @@ export default function Home() {
             {PRESETS.map((preset) => (
               <button
                 key={preset}
-                onClick={() => setQuery(preset)}
+                onClick={() => {
+                  setQuery(preset);
+                  setShowCustomInput(false);
+                }}
                 className={`rounded-full px-4 py-2 text-sm border transition ${
-                  query.toLowerCase() === preset.toLowerCase()
+                  query.toLowerCase() === preset.toLowerCase() && !showCustomInput
                     ? "border-indigo-400 bg-indigo-500/20 text-indigo-200"
                     : "border-zinc-700 bg-zinc-900/70 text-zinc-300 hover:border-zinc-500"
                 }`}
@@ -331,14 +340,27 @@ export default function Home() {
                 {preset}
               </button>
             ))}
+            <button
+              onClick={() => setShowCustomInput((v) => !v)}
+              className={`rounded-full px-4 py-2 text-sm border transition ${
+                showCustomInput
+                  ? "border-fuchsia-300 bg-fuchsia-500/20 text-fuchsia-100"
+                  : "border-fuchsia-400/60 bg-fuchsia-500/10 text-fuchsia-200 hover:bg-fuchsia-500/20"
+              }`}
+            >
+              {showCustomInput ? "Hide custom" : "Enter your own"}
+            </button>
           </div>
 
-          <input
-            className="mt-4 w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 outline-none"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Or write your own desire..."
-          />
+          {showCustomInput && (
+            <input
+              className="mt-4 w-full rounded-xl border border-fuchsia-400/40 bg-zinc-900 px-4 py-3 outline-none"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Type your own intention..."
+              autoFocus
+            />
+          )}
 
           <div className="mt-6 flex gap-3">
             <button

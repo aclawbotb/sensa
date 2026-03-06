@@ -24,3 +24,15 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes floatA {
+  0%,
+  100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, 24px) scale(1.08); }
+}
+
+@keyframes floatB {
+  0%,
+  100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-28px, -22px) scale(1.06); }
+}
