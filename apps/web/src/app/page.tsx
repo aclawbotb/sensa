@@ -168,14 +168,22 @@ export default function Home() {
       for (let px = 0; px < width; px++) {
         const nx = px / width;
         const ny = py / height;
-        const base = fieldAt(nx, ny, points) * 255;
-        const ridge = Math.sin((nx * 18 + ny * 8) * Math.PI) * 10;
-        const contour = Math.sin((nx * 42 - ny * 16) * Math.PI) * 4;
-        const v = Math.max(8, Math.min(245, base + 22 + ridge + contour));
+
+        // terrain-ish base so it feels like a real map surface
+        const signal = fieldAt(nx, ny, points);
+        const terrainA = Math.sin(nx * 9.5) * Math.cos(ny * 8.2);
+        const terrainB = Math.sin((nx * 17.3 + ny * 11.7) * Math.PI) * 0.5;
+        const terrain = signal * 1.35 + terrainA * 0.45 + terrainB * 0.22;
+
+        const depth = Math.max(0, Math.min(1, (terrain + 0.9) / 2.1));
+        const r = 18 + depth * 38;
+        const g = 34 + depth * 68;
+        const b = 52 + depth * 90;
+
         const idx = (py * width + px) * 4;
-        img.data[idx] = v * 0.43;
-        img.data[idx + 1] = v * 0.62;
-        img.data[idx + 2] = v;
+        img.data[idx] = r;
+        img.data[idx + 1] = g;
+        img.data[idx + 2] = b;
         img.data[idx + 3] = 255;
       }
     }
@@ -186,38 +194,63 @@ export default function Home() {
       ctx.clearRect(0, 0, width, height);
       ctx.drawImage(baseLayer, 0, 0);
 
-      // immersive water/fog layer
+      // immersive water/fog layer + realistic map motion
       const mx = journeyMouseRef.current.x;
       const my = journeyMouseRef.current.y;
       const fog = ctx.createRadialGradient(
         width * mx,
         height * my,
-        20,
+        30,
         width * mx,
         height * my,
-        Math.max(width, height) * 0.55,
+        Math.max(width, height) * 0.5,
       );
-      fog.addColorStop(0, "rgba(170,210,255,0.12)");
-      fog.addColorStop(1, "rgba(10,14,25,0.02)");
+      fog.addColorStop(0, "rgba(196,232,255,0.16)");
+      fog.addColorStop(1, "rgba(10,14,25,0.03)");
       ctx.fillStyle = fog;
       ctx.fillRect(0, 0, width, height);
 
-      // drifting hash texture
-      ctx.strokeStyle = "rgba(180,190,255,0.12)";
+      // soft contour lines (map feel)
+      ctx.strokeStyle = "rgba(214,230,255,0.08)";
       ctx.lineWidth = 1;
-      for (let i = 0; i < 140; i++) {
-        const x = ((i * 73 + t * 0.02) % (width + 120)) - 60 + (mx - 0.5) * 12;
-        const y = (i * 41 + Math.sin(t * 0.0007 + i) * 80) % height + (my - 0.5) * 8;
-        const len = 8 + ((i * 13) % 12);
+      for (let row = 0; row < 15; row++) {
+        const y0 = (row + 1) * (height / 16);
+        ctx.beginPath();
+        for (let x = 0; x <= width; x += 16) {
+          const wave = Math.sin((x * 0.006) + row * 0.8 + t * 0.00035) * 6;
+          const y = y0 + wave + (my - 0.5) * 10;
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+
+      // drifting hash/current texture
+      ctx.strokeStyle = "rgba(190,206,255,0.13)";
+      for (let i = 0; i < 120; i++) {
+        const x = ((i * 79 + t * 0.018) % (width + 140)) - 70 + (mx - 0.5) * 15;
+        const y = (i * 37 + Math.sin(t * 0.0006 + i) * 60) % height + (my - 0.5) * 10;
+        const len = 10 + ((i * 11) % 16);
         ctx.beginPath();
         ctx.moveTo(x, y);
-        ctx.lineTo(x + len, y + len * 0.35);
+        ctx.lineTo(x + len, y + len * 0.28);
+        ctx.stroke();
+      }
+
+      // pointer-centered ripple rings
+      const mxPx = journeyMouseRef.current.x * width;
+      const myPx = journeyMouseRef.current.y * height;
+      for (let ring = 0; ring < 3; ring++) {
+        const rr = ((t * 0.08 + ring * 46) % 160) + 12;
+        const alpha = 0.16 - ring * 0.04;
+        ctx.strokeStyle = `rgba(175,220,255,${alpha})`;
+        ctx.lineWidth = 1.4 - ring * 0.25;
+        ctx.beginPath();
+        ctx.arc(mxPx, myPx, rr, 0, Math.PI * 2);
         ctx.stroke();
       }
 
       // liftable hotspots
-      const mxPx = journeyMouseRef.current.x * width;
-      const myPx = journeyMouseRef.current.y * height;
       for (const p of points) {
         const px = p.x * width;
         const py = p.y * height + Math.sin(t * 0.0015 + p.x * 10) * 5;
