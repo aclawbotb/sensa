@@ -36,6 +36,10 @@ export default function Home() {
   const [waitlistState, setWaitlistState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   const [bridgeConnected, setBridgeConnected] = useState(false);
+  const [introMouse, setIntroMouse] = useState({ x: 50, y: 50 });
+  const [ritualPulse, setRitualPulse] = useState(false);
+  const [hoveringHotspot, setHoveringHotspot] = useState(false);
+  const journeyMouseRef = useRef({ x: 0.5, y: 0.5 });
   const bridgeRef = useRef<WebSocket | null>(null);
 
   const canFeel = useMemo(() => typeof navigator !== "undefined" && "vibrate" in navigator, []);
@@ -151,19 +155,22 @@ export default function Home() {
 
     const width = canvas.width;
     const height = canvas.height;
-    const img = ctx.createImageData(width, height);
 
+    const baseLayer = document.createElement("canvas");
+    baseLayer.width = width;
+    baseLayer.height = height;
+    const bctx = baseLayer.getContext("2d");
+    if (!bctx) return;
+
+    const img = bctx.createImageData(width, height);
     for (let py = 0; py < height; py++) {
       for (let px = 0; px < width; px++) {
         const nx = px / width;
         const ny = py / height;
         const base = fieldAt(nx, ny, points) * 255;
-
-        // subtle “map-like” directional texture without literal labels
         const ridge = Math.sin((nx * 18 + ny * 8) * Math.PI) * 10;
         const contour = Math.sin((nx * 42 - ny * 16) * Math.PI) * 4;
         const v = Math.max(8, Math.min(245, base + 22 + ridge + contour));
-
         const idx = (py * width + px) * 4;
         img.data[idx] = v * 0.43;
         img.data[idx + 1] = v * 0.62;
@@ -171,8 +178,50 @@ export default function Home() {
         img.data[idx + 3] = 255;
       }
     }
+    bctx.putImageData(img, 0, 0);
 
-    ctx.putImageData(img, 0, 0);
+    let raf = 0;
+    const draw = (t: number) => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.drawImage(baseLayer, 0, 0);
+
+      // drifting hash texture
+      ctx.strokeStyle = "rgba(180,190,255,0.12)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 140; i++) {
+        const x = ((i * 73 + t * 0.02) % (width + 120)) - 60;
+        const y = (i * 41 + Math.sin(t * 0.0007 + i) * 80) % height;
+        const len = 8 + ((i * 13) % 12);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + len, y + len * 0.35);
+        ctx.stroke();
+      }
+
+      // liftable hotspots
+      const mx = journeyMouseRef.current.x * width;
+      const my = journeyMouseRef.current.y * height;
+      for (const p of points) {
+        const px = p.x * width;
+        const py = p.y * height + Math.sin(t * 0.0015 + p.x * 10) * 5;
+        const dist = Math.hypot(mx - px, my - py);
+        const lift = Math.max(0, 1 - dist / 120);
+        const r = 6 + p.weight * 7 + lift * 8;
+
+        ctx.shadowBlur = 24 * lift;
+        ctx.shadowColor = "rgba(150,170,255,0.9)";
+        ctx.fillStyle = `rgba(${130 + lift * 90}, ${150 + lift * 70}, 255, ${0.2 + lift * 0.55})`;
+        ctx.beginPath();
+        ctx.arc(px, py - lift * 16, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      raf = requestAnimationFrame(draw);
+    };
+
+    raf = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(raf);
   }, [points, stage]);
 
   function onPointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
@@ -180,9 +229,15 @@ export default function Home() {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width;
     const y = (e.clientY - rect.top) / rect.height;
+    journeyMouseRef.current = { x, y };
     const intensity = fieldAt(x, y, points);
 
-    setHint(intensity > 0.7 ? "There. Stay with that feeling." : "Keep drifting.");
+    const nearestDist = Math.min(
+      ...points.map((p) => Math.hypot(x - p.x, y - p.y)),
+    );
+    const hovering = nearestDist < 0.04;
+    setHoveringHotspot(hovering);
+    setHint(hovering ? "You can feel it lifting... click to lock it." : intensity > 0.7 ? "There. Stay with that feeling." : "Keep drifting.");
 
     if (canFeel && intensity > 0.12) {
       const duration = Math.floor(8 + intensity * 26);
@@ -212,8 +267,24 @@ export default function Home() {
 
   if (stage === "intro") {
     return (
-      <main className="min-h-screen bg-[#05060a] text-zinc-100 grid place-items-center p-6">
-        <section className="w-full max-w-4xl rounded-3xl border border-white/10 bg-gradient-to-b from-[#0e1121] to-[#060812] p-8 md:p-12 shadow-[0_0_100px_rgba(100,120,255,0.18)] animate-in fade-in duration-700">
+      <main
+        className="min-h-screen bg-[#05060a] text-zinc-100 grid place-items-center p-6 overflow-hidden"
+        onMouseMove={(e) => {
+          const target = e.currentTarget.getBoundingClientRect();
+          setIntroMouse({
+            x: ((e.clientX - target.left) / target.width) * 100,
+            y: ((e.clientY - target.top) / target.height) * 100,
+          });
+        }}
+      >
+        <div
+          className="pointer-events-none absolute inset-0 transition-all duration-200"
+          style={{
+            background:
+              `radial-gradient(420px circle at ${introMouse.x}% ${introMouse.y}%, rgba(129,140,248,0.2), rgba(6,8,18,0) 55%)`,
+          }}
+        />
+        <section className="relative w-full max-w-4xl rounded-3xl border border-white/10 bg-gradient-to-b from-[#0e1121] to-[#060812] p-8 md:p-12 shadow-[0_0_100px_rgba(100,120,255,0.18)] animate-in fade-in duration-700">
           <p className="text-xs uppercase tracking-[0.25em] text-indigo-300">Sensa</p>
           <h1 className="mt-4 text-4xl md:text-6xl font-semibold leading-tight">Step into a sensory journey.</h1>
           <p className="mt-5 text-zinc-300 max-w-2xl text-lg">
@@ -222,12 +293,17 @@ export default function Home() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <button
-              onClick={() => setStage("intent")}
-              className="rounded-xl bg-indigo-500 hover:bg-indigo-400 px-6 py-3 font-medium transition"
+              onClick={() => {
+                setRitualPulse(true);
+                setTimeout(() => setRitualPulse(false), 220);
+                setStage("intent");
+              }}
+              className={`rounded-xl bg-indigo-500 hover:bg-indigo-400 px-6 py-3 font-medium transition active:scale-95 ${
+                ritualPulse ? "scale-105 shadow-[0_0_40px_rgba(129,140,248,0.6)]" : ""
+              }`}
             >
               Begin the ritual
             </button>
-            <p className="self-center text-sm text-zinc-400">Crossfade into intent selection</p>
           </div>
         </section>
       </main>
@@ -292,7 +368,7 @@ export default function Home() {
           height={980}
           onPointerMove={onPointerMove}
           onClick={onClick}
-          className="w-full h-full cursor-crosshair"
+          className={`w-full h-full ${hoveringHotspot ? "cursor-grab" : "cursor-crosshair"}`}
         />
 
         <div className="absolute left-4 top-4 rounded-full border border-white/20 bg-black/40 px-3 py-1 text-xs tracking-widest uppercase">
