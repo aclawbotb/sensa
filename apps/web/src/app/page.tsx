@@ -40,6 +40,7 @@ export default function Home() {
   const [ritualPulse, setRitualPulse] = useState(false);
   const [hoveringHotspot, setHoveringHotspot] = useState(false);
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [cursor, setCursor] = useState({ x: 0.5, y: 0.5, active: false });
   const journeyMouseRef = useRef({ x: 0.5, y: 0.5 });
   const bridgeRef = useRef<WebSocket | null>(null);
 
@@ -280,6 +281,7 @@ export default function Home() {
     const x = (e.clientX - rect.left) / rect.width;
     const y = (e.clientY - rect.top) / rect.height;
     journeyMouseRef.current = { x, y };
+    setCursor({ x, y, active: true });
     const intensity = fieldAt(x, y, points);
 
     const nearestDist = Math.min(
@@ -458,9 +460,26 @@ Continue
           width={1600}
           height={980}
           onPointerMove={onPointerMove}
+          onPointerLeave={() => setCursor((c) => ({ ...c, active: false }))}
           onClick={onClick}
-          className={`w-full h-full ${hoveringHotspot ? "cursor-grab" : "cursor-crosshair"}`}
+          className="w-full h-full cursor-none"
         />
+
+        {cursor.active && (
+          <div
+            className="pointer-events-none absolute z-20"
+            style={{
+              left: `${cursor.x * 100}%`,
+              top: `${cursor.y * 100}%`,
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <div className={`rounded-full border ${hoveringHotspot ? "border-cyan-100/90" : "border-cyan-200/60"} bg-cyan-200/10 backdrop-blur-sm w-8 h-8 grid place-items-center`}>
+              <div className={`rounded-full ${hoveringHotspot ? "w-2.5 h-2.5 bg-cyan-100" : "w-2 h-2 bg-cyan-200/90"}`} />
+            </div>
+            <div className="absolute -inset-3 rounded-full border border-cyan-200/25 animate-pulse" />
+          </div>
+        )}
 
         <div className="absolute left-4 top-4 rounded-full border border-cyan-200/25 bg-[#08111d]/65 px-3 py-1 text-[11px] tracking-[0.18em] uppercase text-cyan-100/90">
           {query}
