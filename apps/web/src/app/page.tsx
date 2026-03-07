@@ -474,10 +474,10 @@ Continue
               transform: "translate(-50%, -50%)",
             }}
           >
-            <div className={`rounded-full border ${hoveringHotspot ? "border-cyan-100/90" : "border-cyan-200/60"} bg-cyan-200/10 backdrop-blur-sm w-8 h-8 grid place-items-center`}>
-              <div className={`rounded-full ${hoveringHotspot ? "w-2.5 h-2.5 bg-cyan-100" : "w-2 h-2 bg-cyan-200/90"}`} />
+            <div className={`rounded-full aspect-square border ${hoveringHotspot ? "border-cyan-100/90" : "border-cyan-200/60"} bg-cyan-200/10 backdrop-blur-sm w-9 h-9 grid place-items-center`}>
+              <div className={`rounded-full aspect-square ${hoveringHotspot ? "w-2.5 h-2.5 bg-cyan-100" : "w-2 h-2 bg-cyan-200/90"}`} />
             </div>
-            <div className="absolute -inset-3 rounded-full border border-cyan-200/25 animate-pulse" />
+            <div className="absolute -inset-3 rounded-full aspect-square border border-cyan-200/25 animate-pulse" />
           </div>
         )}
 
