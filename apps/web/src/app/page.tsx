@@ -441,7 +441,7 @@ export default function Home() {
                   setStage("journey");
                 }}
               >
-                Enter the field
+Continue
               </button>
             </div>
           )}
